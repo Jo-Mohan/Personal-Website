@@ -28,15 +28,24 @@ function ExperienceGallery() {
   const [selected, setSelected] = useState(experiences[0])
 
   const infoBoxStyle = {
-    minWidth: '200px',
-    maxWidth: '200px',
+    minWidth: '300px',
+    maxWidth: '300px',
+    height: '300px', // fixed height
+    overflow: 'hidden',
     background: 'rgba(255,255,255,0.03)',
     padding: '1rem',
     borderRadius: '12px',
     border: '1px solid rgba(255,255,255,0.05)',
     color: '#ccc',
     flexShrink: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    whiteSpace: 'normal',
+    wordWrap: 'break-word',
+    overflowWrap: 'break-word',
   }
+  
 
   return (
     <div style={{ paddingTop: '80px' }}>
