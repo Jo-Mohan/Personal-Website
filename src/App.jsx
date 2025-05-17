@@ -6,7 +6,7 @@ import { Color, Fog, Vector3, Euler } from 'three';
 // Manual glitch by vertex displacement
 function ManualGlitchMesh({ interval = [2, 5], duration = 0.2, strength = 0.3, children }) {
   const meshRef = useRef();
-  const [timer, setTimer] = useState(() => Math.random() * (interval[1] - interval[0]) + interval[0]);
+  const [_, setTimer] = useState(() => Math.random() * (interval[1] - interval[0]) + interval[0]);
   const [glitchTime, setGlitchTime] = useState(0);
   const original = useRef();
 
