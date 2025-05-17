@@ -1,19 +1,19 @@
 import React, { Suspense, useRef, useState, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { PointerLockControls, Grid } from '@react-three/drei';
-import { Color, Fog } from 'three';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Grid } from '@react-three/drei';
+import { Color, Fog, Vector3, Euler } from 'three';
 
 // Manual glitch by vertex displacement
 function ManualGlitchMesh({ interval = [2, 5], duration = 0.2, strength = 0.3, children }) {
   const meshRef = useRef();
   const [timer, setTimer] = useState(() => Math.random() * (interval[1] - interval[0]) + interval[0]);
   const [glitchTime, setGlitchTime] = useState(0);
-  const originalPositions = useRef();
+  const original = useRef();
 
   useEffect(() => {
     if (meshRef.current) {
-      const posAttr = meshRef.current.geometry.attributes.position;
-      originalPositions.current = Float32Array.from(posAttr.array);
+      const arr = meshRef.current.geometry.attributes.position.array;
+      original.current = Float32Array.from(arr);
     }
   }, []);
 
@@ -25,24 +25,22 @@ function ManualGlitchMesh({ interval = [2, 5], duration = 0.2, strength = 0.3, c
 
     if (glitchTime > 0) {
       for (let i = 0; i < arr.length; i++) {
-        arr[i] = originalPositions.current[i] + (Math.random() - 0.5) * strength;
+        arr[i] = original.current[i] + (Math.random() - 0.5) * strength;
       }
       posAttr.needsUpdate = true;
       setGlitchTime(g => g - delta);
       if (glitchTime - delta <= 0) {
-        for (let i = 0; i < arr.length; i++) {
-          arr[i] = originalPositions.current[i];
-        }
+        for (let i = 0; i < arr.length; i++) arr[i] = original.current[i];
         posAttr.needsUpdate = true;
       }
     } else {
-      setTimer(t => {
-        const t2 = t - delta;
-        if (t2 <= 0) {
+      setTimer(prev => {
+        const next = prev - delta;
+        if (next <= 0) {
           setGlitchTime(duration);
           return Math.random() * (interval[1] - interval[0]) + interval[0];
         }
-        return t2;
+        return next;
       });
     }
   });
@@ -50,16 +48,63 @@ function ManualGlitchMesh({ interval = [2, 5], duration = 0.2, strength = 0.3, c
   return <mesh ref={meshRef}>{children}</mesh>;
 }
 
+// Drag-to-look controls restricted to yaw (left/right) and pitch (up/down)
+function DragLookControls() {
+  const { camera, gl } = useThree();
+  const dragging = useRef(false);
+  const prev = useRef([0, 0]);
+  const euler = useRef(new Euler(0, 0, 0, 'YXZ'));
+
+  useEffect(() => {
+    // Ensure camera is upright and looking forward
+    camera.up.set(0, 1, 0);
+    camera.lookAt(new Vector3(0, 0, 0));
+
+    const canvas = gl.domElement;
+    const onDown = e => { dragging.current = true; prev.current = [e.clientX, e.clientY]; };
+    const onMove = e => {
+      if (!dragging.current) return;
+      const [x0, y0] = prev.current;
+      const dx = (e.clientX - x0) * 0.002;
+      const dy = (e.clientY - y0) * 0.002;
+      prev.current = [e.clientX, e.clientY];
+
+      // update euler from camera quaternion
+      euler.current.setFromQuaternion(camera.quaternion);
+      // apply yaw & pitch
+      euler.current.y -= dx;
+      euler.current.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, euler.current.x - dy));
+      // apply back to camera
+      camera.quaternion.setFromEuler(euler.current);
+    };
+    const onUp = () => { dragging.current = false; };
+
+    canvas.addEventListener('mousedown', onDown);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+
+    return () => {
+      canvas.removeEventListener('mousedown', onDown);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+  }, [camera, gl]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <div style={{ width: '100vw', height: '100vh', margin: 0, padding: 0 }}>
       <Canvas
         style={{ width: '100%', height: '100%', display: 'block' }}
-        camera={{ position: [0, 2, 5], fov: 60 }}
+        camera={{ position: [0, 1, 5], fov: 60 }}
         gl={{ antialias: true }}
-        onCreated={({ scene }) => {
+        onCreated={({ scene, camera }) => {
           scene.background = new Color('#ffffff');
           scene.fog = new Fog('#ffffff', 5, 15);
+          camera.up.set(0, 1, 0);
+          camera.lookAt(0, 0, 0);
         }}
       >
         <ambientLight intensity={0.5} />
@@ -88,8 +133,7 @@ export default function App() {
           </mesh>
         </Suspense>
 
-        {/* First-person look controls */}
-        <PointerLockControls />
+        <DragLookControls />
       </Canvas>
     </div>
   );
