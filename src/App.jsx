@@ -115,8 +115,8 @@ function SkyCracks() {
         side={THREE.BackSide}
         uniforms={{
           uTime: { value: 0 },
-          uPulseFreq: { value: 2.5 },     // faster pulsing
-          uCrackScale: { value: 20.0 }    // more frequent cracks
+          uPulseFreq: { value: 5 },     // faster pulsing
+          uCrackScale: { value: 50.0 }    // more frequent cracks
         }}
         vertexShader={
           `varying vec3 vPos;
