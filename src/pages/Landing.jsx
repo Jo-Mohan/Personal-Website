@@ -31,7 +31,7 @@ export default function Landing() {
       </h1>
 
       <Link to="/menagerie">
-        <button style={{ marginTop: 20, padding: '8px 16px' }}>
+        <button className="cta-button">
           Experiences
         </button>
       </Link>
