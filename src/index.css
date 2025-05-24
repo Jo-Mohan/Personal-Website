@@ -1,68 +1,66 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* reset margins and make body fill viewport */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  /* pulsing radial gradient from very dark gray to black */
+  font-family: 'Montserrat', sans-serif;
+  background: radial-gradient(circle at center, #1a1a1a 0%, #000000 80%);
+  background-size: 200% 200%;
+  animation: bgShift 20s ease infinite;
+  position: relative;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+@keyframes bgShift {
+  0%   { background-position:   0%   0%; }
+  50%  { background-position: 100% 100%; }
+  100% { background-position:   0%   0%; }
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* very subtle film‑grain noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  /* 10×10 noise PNG, repeated */
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAK0lEQVR42mNk+M9Qz0AEYBxVSFTEF8SjELGIMYgF1CEYZgPSFQDAOrgFDW2xKZgAAAABJRU5ErkJggg==') repeat;
+  opacity: 0.05;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+
+
+/* Typing animation */
+.typing {
+  font-family: 'Montserrat', sans-serif;
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  /* only the typing animation */
+  animation: typing 2s steps(26,end) 0.5s forwards;
+  border-right: .15em solid #fff; /* caret */
 }
+
+/* remove the border-right once we toggle the class */
+.typing.no-cursor {
+  border-right: none;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to   { width: 21.5ch; }
+}
+
+
+
