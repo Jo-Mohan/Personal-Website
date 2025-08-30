@@ -48,20 +48,46 @@ export default function MenagerieCarousel() {
   // placeholder experiences
  const experiences = [
   {
-    id: 'square',
-    title: 'Square',
-    // This <boxGeometry/> + <meshStandardMaterial/> combo renders a black cube
+    id: 'c1',
+    title: 'Capital One - Software Engineering Intern',
     geometry: (<boxGeometry args={[1, 1, 1]} />),
     material: (<meshStandardMaterial color="#000000" />),
-    items: ['This is a square placeholder']
+    items: ['Capital One Placeholder']
   },
   {
-    id: 'triangle',
-    title: 'Triangle Prism',
-    // This <coneGeometry/> + <meshStandardMaterial/> combo renders a black triangular prism
+    id: 'intel',
+    title: 'Intel - Security Software Engineer Intern',
     geometry: (<coneGeometry args={[1, 1, 3]} />),
     material: (<meshStandardMaterial color="#000000" />),
-    items: ['This is a triangular placeholder']
+    items: ['Intel Placeholder']
+  },
+  {
+  id: 'geneva',
+  title: 'Geneva Trading - Quantitative Trading Intern',
+  geometry: (<sphereGeometry args={[1, 12, 12]} />),
+  material: (<meshStandardMaterial color="#000000" />),
+  items: ['Geneva Placeholder']
+  },
+  {
+  id: 'stanford',
+  title: 'Stanford University - Code In Place Instructor',
+  geometry: (<torusKnotGeometry args={[1, 0.3, 10, 10]} />),
+  material: (<meshStandardMaterial color="#000000" />),
+  items: ['Stanford Placeholder']
+  },
+  {
+  id: 'dlab',
+  title: 'Disruption Lab - Software Developer',
+  geometry: (<cylinderGeometry args={[1, 1, 5, 5]} />),
+  material: (<meshStandardMaterial color="#000000" />),
+  items: ['Dlab Placeholder']
+  },
+    {
+  id: 'imc',
+  title: 'IMC Prosperity',
+  geometry: (<octahedronGeometry args={[1, 1]} />),
+  material: (<meshStandardMaterial color="#000000" />),
+  items: ['IMC Placeholder']
   }
 ];
 
@@ -110,7 +136,7 @@ export default function MenagerieCarousel() {
 
       <Canvas
         style={{ width: '100%', height: '100%' }}
-        camera={{ position: [0, 1.5, 5], fov: 60 }}
+        camera={{ position: [2, 1.5, 5], fov: 100 }}
         onCreated={({ scene, camera }) => {
           scene.background = new Color('#ffffff')
           scene.fog = new Fog('#ffffff', 5, 15)
